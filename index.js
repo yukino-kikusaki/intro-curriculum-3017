@@ -7,7 +7,7 @@ const basic = auth.basic(
   (username, password, callback) => {
     callback(username === 'guest' && password === 'xaXZJQmE');
   });
-const server = http.createServer(basic, (req, res) => {
+const server = http.createServer(basic.check((req, res) => {
   console.info('Requested by ' + req.socket.remoteAddress);
 
   if (req.url === '/logout') {
@@ -80,8 +80,8 @@ const server = http.createServer(basic, (req, res) => {
       break;
     default:
       break;
-  }
-})
+    }
+  }))
   .on('error', e => {
     console.error('Server Error', e);
   })
