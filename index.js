@@ -8,7 +8,7 @@ const basic = auth.basic(
     callback(username === 'guest' && password === 'xaXZJQmE');
   });
 const server = http.createServer(basic.check((req, res) => {
-  console.info('Requested by ' + req.socket.remoteAddress);
+  console.info(`Requested by ${req.socket.remoteAddress}`);
 
   if (req.url === '/logout') {
     res.writeHead(401, {
@@ -68,13 +68,10 @@ const server = http.createServer(basic.check((req, res) => {
           rawData += chunk;
         })
         .on('end', () => {
-          const qs = require('querystring');
-          const answer = qs.parse(rawData);
-          const body = answer['name'] + 'さんは' +
-            answer['favorite'] + 'に投票しました';
+          const answer = new URLSearchParams(rawData);
+          const body = `${answer.get('name')}さんは${answer.get('favorite')}に投票しました`;
           console.info(body);
-          res.write('<!DOCTYPE html><html lang="ja"><body><h1>' +
-            body + '</h1></body></html>');
+          res.write(`<!DOCTYPE html><html lang="ja"><body><h1>${body}</h1></body></html>`);
           res.end();
         });
       break;
@@ -90,5 +87,5 @@ const server = http.createServer(basic.check((req, res) => {
   });
 const port = process.env.PORT || 8000;
 server.listen(port, () => {
-  console.info('Listening on ' + port);
+  console.info(`Listening on ${port}`);
 });
